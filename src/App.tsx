@@ -1,19 +1,12 @@
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { designPersona, samplePost } from "./claude";
-import { createdTokens, odin, tokenById, type TokenInfo } from "./odin";
+import { createdTokens, tokenById, useOdin, type TokenInfo } from "./odin";
 import { BUNDLED, botYaml, forToken, portraitUrl, type BotSettings, type Persona } from "./persona";
 
 const TEMPLATE = { owner: "Nikola-Tesla-Odin", repo: "token-voice-bot" };
 
 export default function App() {
-  const { status, user, request } = useSyncExternalStore(odin.subscribe, odin.getState, odin.getServerState);
-  const principal = user?.principal ?? null;
-  const signIn =
-    !principal && request?.action === "connect" && request.status !== "success"
-      ? request.status === "pending"
-        ? { kind: "muted", text: "Waiting for Odin… finish signing in, in the Odin window." }
-        : { kind: "error", text: `Sign-in ${request.status}${request.error ? `: ${request.error}` : ""}. Try again.` }
-      : null;
+  const { principal, busy, error, signIn, signOut } = useOdin();
 
   return (
     <main>
@@ -26,20 +19,19 @@ export default function App() {
             your own keys.
           </p>
         </div>
-        {status === "ready" &&
-          (principal ? (
-            <div className="who">
-              <code title={principal}>{principal.slice(0, 11)}…</code>
-              <button className="ghost" onClick={() => odin.disconnect()}>Sign out</button>
-            </div>
-          ) : (
-            <button onClick={() => odin.connect()}>Sign in with Odin</button>
-          ))}
+        {principal ? (
+          <div className="who">
+            <code title={principal}>{principal.slice(0, 11)}…</code>
+            <button className="ghost" onClick={signOut}>Sign out</button>
+          </div>
+        ) : (
+          <button disabled={busy} onClick={signIn}>{busy ? "Signing in…" : "Sign in with Odin"}</button>
+        )}
       </header>
 
-      {signIn && <p className={signIn.kind}>{signIn.text}</p>}
-      {status === "initializing" && <p className="muted">Loading…</p>}
-      {status === "ready" && !principal && <Intro />}
+      {busy && <p className="muted">Finish signing in, in the Odin window.</p>}
+      {error && <p className="error">{error}</p>}
+      {!principal && <Intro />}
       {principal && <Builder principal={principal} />}
 
       <footer className="muted">

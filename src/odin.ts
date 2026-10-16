@@ -1,7 +1,36 @@
-import { OdinConnect, type OdinToken } from "odin-connect";
+import { useState } from "react";
+import { OdinConnect, type OdinConnectedUser, type OdinToken } from "odin-connect";
 
-// One instance per page load (the SDK restores the session and finishes redirects from its constructor).
+// odin-connect 1.7: Odin's live sign-in page doesn't yet send the identity proof that 2.x requires.
+// This site has no server that trusts the sign-in, so the 1.x flow loses nothing that matters here.
 export const odin = new OdinConnect({ name: "Token Voices", env: "prod" });
+
+/** Odin sign-in state for the page: restores a saved session, signs in through Odin's popup. */
+export function useOdin() {
+  const [user, setUser] = useState<OdinConnectedUser | null>(() => odin.restoreSession());
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  async function signIn() {
+    setError("");
+    setBusy(true);
+    try {
+      setUser(await odin.connect());
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setError(/closed|reject/i.test(msg) ? "Sign-in was cancelled. Try again." : `Sign-in failed: ${msg}`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function signOut() {
+    odin.disconnect();
+    setUser(null);
+  }
+
+  return { principal: user?.principal ?? null, busy, error, signIn, signOut };
+}
 
 /** The fields the studio server needs. BigInt market fields are dropped: they don't JSON-serialize. */
 export type TokenInfo = {
