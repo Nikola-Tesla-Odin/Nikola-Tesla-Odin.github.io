@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { designPersona, samplePost } from "./claude";
 import { createdTokens, tokenById, useOdin, type TokenInfo } from "./odin";
 import { BUNDLED, botYaml, forToken, portraitUrl, type BotSettings, type Persona } from "./persona";
+import { track } from "./track";
 
 const TEMPLATE = { owner: "Nikola-Tesla-Odin", repo: "token-voice-bot" };
 
@@ -25,7 +26,7 @@ export default function App() {
             <button className="ghost" onClick={signOut}>Sign out</button>
           </div>
         ) : (
-          <button disabled={busy} onClick={signIn}>{busy ? "Signing in…" : "Sign in with Odin"}</button>
+          <button disabled={busy} onClick={() => { track("1-signin-clicked", "Clicked Sign in with Odin"); signIn(); }}>{busy ? "Signing in…" : "Sign in with Odin"}</button>
         )}
       </header>
 
@@ -37,7 +38,8 @@ export default function App() {
       <footer className="muted">
         <p>
           Independent project, not affiliated with Odin.fun. Bots never talk about price or tell anyone to buy or
-          sell. Your keys stay in your browser and your own GitHub account; this site has no server.
+          sell. Your keys stay in your browser and your own GitHub account; this site has no server. Anonymous visit
+          counts (no cookies, no personal data) via GoatCounter.
         </p>
         <p>
           Bot code: <a href={`https://github.com/${TEMPLATE.owner}/${TEMPLATE.repo}`} target="_blank" rel="noopener">github.com/{TEMPLATE.owner}/{TEMPLATE.repo}</a>
@@ -98,6 +100,7 @@ function Builder({ principal }: { principal: string }) {
       setTokens((prev) => [...(prev ?? []).filter((x) => x.id !== t.id), t]);
       setToken(t);
       setById("");
+      track("3-token-picked", "Picked a token");
     } catch (e) {
       setTokenError(e instanceof Error ? e.message : String(e));
     }
@@ -130,7 +133,7 @@ function Builder({ principal }: { principal: string }) {
         ) : (
           <div className="choices">
             {tokens.map((t) => (
-              <button key={t.id} className={`choice ${token?.id === t.id ? "on" : ""}`} onClick={() => setToken(t)}>
+              <button key={t.id} className={`choice ${token?.id === t.id ? "on" : ""}`} onClick={() => { setToken(t); track("3-token-picked", "Picked a token"); }}>
                 <strong className="tick">${t.ticker}</strong>
                 <span>{t.name}</span>
               </button>
@@ -156,7 +159,7 @@ function Builder({ principal }: { principal: string }) {
               <button
                 key={p.name}
                 className={`choice ${voice?.name === p.name ? "on" : ""}`}
-                onClick={() => { setVoice(p); setSample(""); }}
+                onClick={() => { setVoice(p); setSample(""); track("4-voice-picked", "Picked a voice"); }}
               >
                 <strong>{p.name}</strong>
                 <span>{p.tagline}</span>
@@ -174,6 +177,8 @@ function Builder({ principal }: { principal: string }) {
                 setVoice(p);
                 setSample("");
                 setWho("");
+                track("4-voice-picked", "Picked a voice");
+                track("4b-voice-created", "Created a custom voice");
               })}
             >
               Create voice
@@ -191,7 +196,10 @@ function Builder({ principal }: { principal: string }) {
           <div className="row">
             <button
               disabled={!claudeKey.trim() || !!busy}
-              onClick={() => run("Writing a sample post…", async () => setSample(await samplePost(claudeKey, live)))}
+              onClick={() => run("Writing a sample post…", async () => {
+                setSample(await samplePost(claudeKey, live));
+                track("5-previewed", "Previewed a post");
+              })}
             >
               {sample ? "Write another" : "Write a sample post"}
             </button>
@@ -256,7 +264,7 @@ function Deploy({ yamlText, claudeKey }: { yamlText: string; claudeKey: string }
         <li>
           <h3>Make your copy of the bot</h3>
           <p>Name it anything. Private is fine.</p>
-          <a className="btn" href={`https://github.com/new?template_owner=${TEMPLATE.owner}&template_name=${TEMPLATE.repo}`} target="_blank" rel="noopener">
+          <a className="btn" href={`https://github.com/new?template_owner=${TEMPLATE.owner}&template_name=${TEMPLATE.repo}`} target="_blank" rel="noopener" onClick={() => track("6-setup-copy", "Setup: create copy")}>
             Create my copy on GitHub
           </a>
           <div className="row">
@@ -267,7 +275,7 @@ function Deploy({ yamlText, claudeKey }: { yamlText: string; claudeKey: string }
         <li>
           <h3>Add your token's voice</h3>
           <p>Opens GitHub with <code>bot/persona.yaml</code> already filled in. Click <em>Commit changes</em>.</p>
-          <a className={`btn ${ready ? "" : "disabled"}`} aria-disabled={!ready} href={ready ? newFile : undefined} target="_blank" rel="noopener">
+          <a className={`btn ${ready ? "" : "disabled"}`} aria-disabled={!ready} href={ready ? newFile : undefined} target="_blank" rel="noopener" onClick={() => track("7-setup-voice-file", "Setup: add voice file")}>
             Add the voice file
           </a>
           <details>
@@ -279,7 +287,7 @@ function Deploy({ yamlText, claudeKey }: { yamlText: string; claudeKey: string }
         <li>
           <h3>Add your keys as secrets</h3>
           <p>On the secrets page, add each one with <em>New repository secret</em>. Only your bot can read them.</p>
-          <a className={`btn ${ready ? "" : "disabled"}`} aria-disabled={!ready} href={ready ? `${base}/settings/secrets/actions/new` : undefined} target="_blank" rel="noopener">
+          <a className={`btn ${ready ? "" : "disabled"}`} aria-disabled={!ready} href={ready ? `${base}/settings/secrets/actions/new` : undefined} target="_blank" rel="noopener" onClick={() => track("8-setup-secrets", "Setup: open secrets")}>
             Open the secrets page
           </a>
           <table className="secrets">
@@ -296,7 +304,7 @@ function Deploy({ yamlText, claudeKey }: { yamlText: string; claudeKey: string }
         <li>
           <h3>Post the first one</h3>
           <p>Click <em>Run workflow</em>. In a minute your token posts. After that it posts every few hours on its own.</p>
-          <a className={`btn ${ready ? "" : "disabled"}`} aria-disabled={!ready} href={ready ? `${base}/actions/workflows/bot.yml` : undefined} target="_blank" rel="noopener">
+          <a className={`btn ${ready ? "" : "disabled"}`} aria-disabled={!ready} href={ready ? `${base}/actions/workflows/bot.yml` : undefined} target="_blank" rel="noopener" onClick={() => track("9-setup-run", "Setup: open Run workflow")}>
             Open the bot's Actions page
           </a>
         </li>

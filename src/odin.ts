@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { OdinConnect, type OdinConnectedUser, type OdinToken } from "odin-connect";
+import { track } from "./track";
 
 // odin-connect 1.7: Odin's live sign-in page doesn't yet send the identity proof that 2.x requires.
 // This site has no server that trusts the sign-in, so the 1.x flow loses nothing that matters here.
@@ -16,8 +17,10 @@ export function useOdin() {
     setBusy(true);
     try {
       setUser(await odin.connect());
+      track("2-signed-in", "Signed in with Odin");
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
+      track("signin-failed", "Sign-in failed or cancelled");
       setError(/closed|reject/i.test(msg) ? "Sign-in was cancelled. Try again." : `Sign-in failed: ${msg}`);
     } finally {
       setBusy(false);
