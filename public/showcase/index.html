@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A personality for your Odin.fun token that posts original lines and quote cards to X and Telegram. Live example: Nikola Tesla for $TSLA.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nikola-tesla-odin.github.io/showcase/">
+<meta property="og:title" content="Give your Odin token a voice">
+<meta property="og:description" content="Nikola Tesla, Confucius, or anyone you describe, posting for your token on X and Telegram. Free, from your own GitHub.">
+<meta property="og:image" content="https://nikola-tesla-odin.github.io/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://nikola-tesla-odin.github.io/og.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+<style>
+  :root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body { margin: 0; }
+  img { max-width: 100%; }
+</style>
+<title>Token Voices: give your Odin token a voice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gelasio:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  /* Layout: a broadcast desk. Hero pairs the pitch with a real posted card; below, the steps,
+     the voices on offer, a transmission log of the live $TSLA bot, and the rules every bot keeps. */
+  :root {
+    --paper: #f1f2f5;
+    --surface: #ffffff;
+    --ink: #151925;
+    --muted: #5a6274;
+    --line: #d8dbe3;
+    --btc: #c85f0f;          /* Bitcoin orange, deepened for contrast on light paper */
+    --btc-soft: #fbe9da;
+    --shadow: 0 18px 40px -22px rgba(21, 25, 37, 0.45);
+    --display: "Gelasio", Georgia, "Times New Roman", serif;
+    --body: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0e1118; --surface: #161a24; --ink: #ece7dc; --muted: #9aa1af; --line: #272d3b;
+      --btc: #f7931a; --btc-soft: #2a1d10; --shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.8);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0e1118; --surface: #161a24; --ink: #ece7dc; --muted: #9aa1af; --line: #272d3b;
+    --btc: #f7931a; --btc-soft: #2a1d10; --shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.8);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  img { height: auto; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font: 400 17px/1.6 var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 1080px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  section { padding-block: 56px; border-top: 1px solid var(--line); }
+  h1, h2, h3 { font-family: var(--display); font-weight: 400; text-wrap: balance; margin: 0; }
+  h2 { font-size: clamp(28px, 3.4vw, 38px); line-height: 1.15; }
+  p { margin: 0; }
+  a { color: inherit; }
+  .label {
+    font: 500 12px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  }
+  .tick { font-family: var(--mono); color: var(--btc); font-weight: 500; }
+
+  /* Hero */
+  .hero {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: 48px; align-items: center; padding-block: 56px 64px;
+  }
+  .hero h1 { font-size: clamp(40px, 5.6vw, 66px); line-height: 1.04; letter-spacing: -0.01em; }
+  .hero h1 em { font-style: italic; color: var(--btc); }
+  .hero .lede { margin-top: 20px; font-size: 19px; color: var(--muted); max-width: 34em; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+    font: 600 16px/1 var(--body); padding: 14px 20px; border-radius: 10px;
+    background: var(--ink); color: var(--paper); border: 1px solid var(--ink);
+  }
+  .btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); font-weight: 500; }
+  .btn:focus-visible, .copy:focus-visible { outline: 2px solid var(--btc); outline-offset: 3px; }
+  .hero figure { margin: 0; }
+  .hero img { display: block; width: 100%; border-radius: 10px; box-shadow: var(--shadow); }
+  .hero figcaption { margin-top: 12px; font: 400 13px/1.4 var(--mono); color: var(--muted); }
+
+  /* Steps: a real sequence, so numbered */
+  .steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; margin-top: 32px; }
+  .step { display: grid; gap: 10px; align-content: start; }
+  .step .n { font: 500 13px/1 var(--mono); color: var(--btc); }
+  .step h3 { font-size: 22px; }
+  .step p { color: var(--muted); font-size: 16px; }
+
+  /* Voices */
+  .voices-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: end; }
+  .voices-head p { color: var(--muted); max-width: 30em; }
+  .voices {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px; margin-top: 28px; background: var(--line); border: 1px solid var(--line); border-radius: 10px;
+    overflow: hidden;
+  }
+  .voice { background: var(--surface); padding: 20px; display: grid; gap: 6px; align-content: start; }
+  .voice h3 { font-size: 21px; }
+  .voice p { color: var(--muted); font-size: 15px; line-height: 1.5; }
+  .voice.any { background: var(--btc-soft); }
+  .voice.any h3 { font-style: italic; }
+
+  .pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; margin-top: 28px; }
+  .pair img { width: 100%; display: block; border-radius: 8px; border: 1px solid var(--line); }
+  .pair figure { margin: 0; display: grid; gap: 8px; }
+  .pair figcaption { font: 400 13px/1.4 var(--mono); color: var(--muted); }
+
+  /* Transmission log */
+  .live { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); gap: 48px; }
+  .live .intro { display: grid; gap: 16px; align-content: start; }
+  .live .intro p { color: var(--muted); }
+  .specs { display: grid; grid-template-columns: auto 1fr; gap: 8px 18px; margin: 4px 0 0; font-size: 15px; }
+  .specs dt { font: 500 13px/1.6 var(--mono); color: var(--muted); }
+  .specs dd { margin: 0; }
+  .log { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .log li { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 18px; padding-block: 20px; border-bottom: 1px solid var(--line); }
+  .log time { font: 400 13px/1.6 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .log blockquote { margin: 0; font: 400 19px/1.5 var(--display); }
+  .log .ch { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .chip { font: 500 11px/1 var(--mono); letter-spacing: 0.06em; padding: 5px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+
+  /* Rules */
+  .rules { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 28px 32px; margin-top: 28px; }
+  .rule { display: grid; gap: 6px; align-content: start; padding-top: 14px; border-top: 2px solid var(--ink); }
+  .rule h3 { font-size: 20px; }
+  .rule p { color: var(--muted); font-size: 15px; }
+
+  /* Closing call */
+  .close { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 24px; }
+  .close h2 { max-width: 16em; }
+  .handle {
+    display: inline-flex; align-items: center; gap: 10px; padding: 10px 12px 10px 16px;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--surface);
+    font: 500 16px/1 var(--mono); user-select: all;
+  }
+  .copy {
+    font: 500 13px/1 var(--body); padding: 8px 10px; border-radius: 7px; border: 1px solid var(--line);
+    background: var(--paper); color: var(--ink); cursor: pointer;
+  }
+  .aside { margin-top: 24px; color: var(--muted); font-size: 15px; }
+  .close-copy { display: grid; gap: 10px; }
+  .close-copy p { color: var(--muted); max-width: 34em; }
+  .handle-inline { font-family: var(--mono); color: var(--ink); }
+  footer { padding-block: 32px 48px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; display: grid; gap: 6px; }
+
+  @media (max-width: 860px) {
+    .hero, .live { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+    .steps, .voices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 520px) {
+    .steps, .pair, .voices { grid-template-columns: minmax(0, 1fr); }
+    .log li { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+    section { padding-block: 44px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero img { animation: rise 700ms cubic-bezier(.2, .7, .2, 1) both; }
+    @keyframes rise { from { transform: translateY(10px) rotate(-0.6deg); } to { transform: none; } }
+  }
+</style>
+<script data-goatcounter="https://tokenvoices.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <p class="label">For Odin.fun tokens on Bitcoin</p>
+      <h1 style="margin-top:14px">Give your token a <em>voice</em>.</h1>
+      <p class="lede">
+        Pick a personality for your token, Nikola Tesla, Confucius, a grumpy pirate, or anyone you can describe,
+        and it posts original lines with a quote card to X and Telegram every few hours.
+      </p>
+      <div class="cta-row">
+        <a class="btn" href="https://nikola-tesla-odin.github.io/" target="_blank" rel="noopener">Set up your token's voice</a>
+        <a class="btn ghost" href="#live">See one running</a>
+      </div>
+    </div>
+    <figure>
+      <img src="tsla1.jpg" alt="Quote card: Nikola Tesla, speaking for $TSLA, on ideas outliving patents" width="1200" height="675">
+      <figcaption>Posted by the $TSLA bot, 16 Oct 2026</figcaption>
+    </figure>
+  </header>
+</div>
+
+<section>
+  <div class="wrap">
+    <p class="label">How it works</p>
+    <h2 style="margin-top:12px">From token to talking in four steps</h2>
+    <div class="steps">
+      <div class="step"><span class="n">01</span><h3>Your token</h3><p>Only a token's creator can give it a voice, so nobody can speak for yours.</p></div>
+      <div class="step"><span class="n">02</span><h3>A personality</h3><p>Choose a ready voice or describe a new one. Claude writes its style, themes and limits.</p></div>
+      <div class="step"><span class="n">03</span><h3>Your channels</h3><p>Connect your X account (through Buffer) and a Telegram channel.</p></div>
+      <div class="step"><span class="n">04</span><h3>It posts</h3><p>Every 2 to 24 hours, an original line and a matching quote card, around the clock.</p></div>
+    </div>
+    <p class="aside">It runs in your own free GitHub account with your own keys. Nobody else ever holds them.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="voices-head">
+      <div>
+        <p class="label">Voices</p>
+        <h2 style="margin-top:12px">Ready to speak, or made to order</h2>
+      </div>
+      <p>Each voice is a short profile: who they are, how they talk, what they care about, and what they never say.</p>
+    </div>
+    <div class="voices">
+      <div class="voice"><h3>Nikola Tesla</h3><p>Inventor of the electrified future. Energy, invention, patience, the cost of genius.</p></div>
+      <div class="voice"><h3>Confucius</h3><p>Teacher of the Way. Brief, balanced sayings on character, learning and greed.</p></div>
+      <div class="voice"><h3>Marcus Aurelius</h3><p>Stoic emperor writing notes to himself. Duty, calm, and what is in your control.</p></div>
+      <div class="voice"><h3>Captain Barnacle Grimm</h3><p>A grumpy pirate captain with hard-won life advice and a parrot named Tax Collector.</p></div>
+      <div class="voice"><h3>Dex Halloran</h3><p>A three-time founder, still checking Stripe at 3 a.m. Dark humor, secretly hopeful.</p></div>
+      <div class="voice any"><h3>Anyone you describe</h3><p>"Ada Lovelace." "A wise old fisherman." One line is enough to build a full voice.</p></div>
+    </div>
+    <div class="pair">
+      <figure>
+        <img src="tsla2.jpg" alt="Quote card: Nikola Tesla on the wireless world arriving" width="1200" height="675" loading="lazy">
+        <figcaption>With a portrait: Tesla for $TSLA</figcaption>
+      </figure>
+      <figure>
+        <img src="conf.jpg" alt="Quote card: Confucius on patience" width="1200" height="675" loading="lazy">
+        <figcaption>Without one: the quote stands alone</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="live">
+  <div class="wrap live">
+    <div class="intro">
+      <p class="label">Live now</p>
+      <h2>The <span class="tick">$TSLA</span> bot</h2>
+      <p>Nikola Tesla speaks for the $TSLA token on Odin. It runs in the cloud, so it keeps posting with every laptop closed.</p>
+      <dl class="specs">
+        <dt>Voice</dt><dd>Nikola Tesla</dd>
+        <dt>Schedule</dt><dd>Every 2 hours</dd>
+        <dt>Posts to</dt><dd>X and Telegram, each with a card</dd>
+        <dt>Spend cap</dt><dd>$1.50 a month</dd>
+      </dl>
+      <div><a class="btn ghost" href="https://x.com/NikolaTesla_eth" target="_blank" rel="noopener">Follow it on X</a></div>
+    </div>
+    <ol class="log" aria-label="Recent posts from the $TSLA bot">
+      <li>
+        <time datetime="2026-10-16T14:52Z">16 Oct<br>14:52 UTC</time>
+        <div>
+          <blockquote>The wireless world I foresaw has arrived, and it needed no magic, only patience. Satellites circle overhead, and the phone in your hand listens to them. Now the true task begins: to use this gift kindly.</blockquote>
+          <div class="ch"><span class="chip">X</span><span class="chip">TELEGRAM</span><span class="chip">CARD</span></div>
+        </div>
+      </li>
+      <li>
+        <time datetime="2026-10-16T14:46Z">16 Oct<br>14:46 UTC</time>
+        <div>
+          <blockquote>The banker owns the patent paper. The inventor owns only the idea. Yet the idea outlives every vault, the way a bell keeps ringing after the hand has let go.</blockquote>
+          <div class="ch"><span class="chip">X</span><span class="chip">TELEGRAM</span><span class="chip">CARD</span></div>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">Rules every bot keeps</p>
+    <h2 style="margin-top:12px">A voice, never a shill</h2>
+    <div class="rules">
+      <div class="rule"><h3>No price talk</h3><p>No charts, gains or predictions, and never "buy", "sell" or "hold". Nothing here is financial advice.</p></div>
+      <div class="rule"><h3>No tagging strangers</h3><p>Token bots never @-mention other accounts, so they don't read as spam.</p></div>
+      <div class="rule"><h3>Original lines only</h3><p>Every post is new writing in the voice, never a real quotation passed off as genuine.</p></div>
+      <div class="rule"><h3>A hard spend cap</h3><p>Each bot stops itself at its monthly budget. $1.50 a month covers a post every 2 hours.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap close">
+    <div class="close-copy">
+      <h2>Want your Odin token to speak?</h2>
+      <p>Sign in with Odin, pick a voice, and switch it on in about 10 minutes. Questions? <span class="handle-inline">@NikolaTesla_eth</span> on X.</p>
+    </div>
+    <div class="cta-row" style="margin-top:0">
+      <a class="btn" href="https://nikola-tesla-odin.github.io/" target="_blank" rel="noopener">Open the studio</a>
+      <a class="btn ghost" href="https://x.com/NikolaTesla_eth" target="_blank" rel="noopener">Message on X</a>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <footer>
+    <p>An independent project, not affiliated with or endorsed by Odin.fun.</p>
+    <p>Posts are written by AI in the voice of historical and fictional characters and are not real quotations. Nothing on this page or in any post is financial advice.</p>
+  </footer>
+</div>
+</body>
+</html>
