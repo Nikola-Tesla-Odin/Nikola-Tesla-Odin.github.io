@@ -1,0 +1,124 @@
+/* One dark look, deliberately: it is the same ground the quote cards are printed on. */
+:root {
+  --bg: #0e1118;
+  --panel: #151923;
+  --raised: #1b2030;
+  --line: #272d3b;
+  --ink: #ece7dc;
+  --muted: #9aa1af;
+  --btc: #f7931a;
+  --card-ink: #eee9de;
+  --card-accent: #6eb4ff;
+  --ok: #7fd49a;
+  --bad: #ff8a80;
+  --display: "Gelasio", Georgia, serif;
+  --body: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--body); -webkit-font-smoothing: antialiased; }
+
+main {
+  max-width: 900px; margin: 0 auto;
+  padding-block: 40px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 28px; }
+h1 { font: 400 clamp(36px, 6vw, 52px)/1.05 var(--display); margin: 6px 0 10px; text-wrap: balance; }
+h2 { font: 400 24px/1.25 var(--display); margin: 0 0 14px; display: flex; align-items: baseline; gap: 12px; text-wrap: balance; }
+h3 { font: 600 16px/1.3 var(--body); margin: 0; }
+p { margin: 0; }
+a { color: var(--ink); }
+.label { font: 500 12px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--btc); }
+.lede { max-width: 34em; font-size: 17px; }
+.muted { color: var(--muted); }
+.error { color: var(--bad); margin-top: 8px; }
+.hint { color: var(--muted); font-size: 13px; }
+.n { font: 500 13px/1 var(--mono); color: var(--btc); border: 1px solid var(--line); border-radius: 999px; padding: 4px 8px; }
+.tick { font-family: var(--mono); color: var(--btc); }
+.who { display: flex; gap: 8px; align-items: center; }
+code { font-family: var(--mono); font-size: 0.92em; }
+
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 22px; margin-bottom: 18px; display: grid; gap: 14px; }
+
+button, .btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--btc); color: #1a0e02; border: 0; border-radius: 8px;
+  padding: 10px 16px; font: 600 15px/1.2 var(--body); cursor: pointer; text-decoration: none;
+  width: fit-content;
+}
+button:disabled, .btn.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+button.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 500; }
+button.copy { background: var(--raised); color: var(--ink); border: 1px solid var(--line); padding: 4px 8px; font: 500 12px/1 var(--body); }
+button:focus-visible, .btn:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--btc); outline-offset: 2px; }
+
+input, select {
+  width: 100%; background: var(--bg); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 8px; padding: 10px 12px; font: inherit;
+}
+label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--muted); }
+label.check { flex-direction: row; align-items: center; gap: 8px; }
+label.check input { width: auto; }
+
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.row > input { flex: 1 1 220px; min-width: 0; }
+.row > label { flex: 1 1 200px; min-width: 0; }
+.row > label.check { flex-basis: 100%; }
+
+.choices { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 10px; }
+.choice {
+  width: auto; text-align: left; display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
+  background: var(--bg); color: var(--ink); border: 1px solid var(--line); font-weight: 400; min-width: 0;
+}
+.choice strong { font: 600 15px/1.3 var(--body); }
+.choice .tick { font-family: var(--mono); }
+.choice span { color: var(--muted); font-size: 13px; line-height: 1.4; }
+.choice.on { border-color: var(--btc); box-shadow: 0 0 0 1px var(--btc); }
+
+.steps { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+
+/* Quote card preview: a CSS stand-in for the PNG the bot renders */
+.qcard {
+  margin: 4px 0 0; position: relative; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 10px; overflow: hidden;
+  background: #0e1118; border: 1px solid var(--line); display: flex;
+}
+.qportrait {
+  flex: 0 0 38%; background-size: cover; background-position: 50% 30%; filter: grayscale(1);
+  -webkit-mask-image: linear-gradient(90deg, #000 55%, transparent);
+          mask-image: linear-gradient(90deg, #000 55%, transparent);
+}
+.qcard blockquote {
+  margin: 0; flex: 1; min-width: 0; padding: 6% 7% 6% 5%; display: flex; flex-direction: column; justify-content: center; gap: 4%;
+  font: 400 clamp(14px, 2.6vw, 24px)/1.4 var(--display); color: var(--card-ink);
+}
+.qmark { color: var(--card-accent); font-size: 2.2em; line-height: 0.6; }
+.qcard footer { font: italic 400 0.7em/1.3 var(--display); color: #969eac; padding-top: 4%; border-top: 2px solid var(--card-accent); width: fit-content; }
+
+.deploy { margin: 0; padding-left: 22px; display: grid; gap: 22px; }
+.deploy li { display: grid; gap: 10px; }
+.deploy li::marker { font: 500 14px var(--mono); color: var(--btc); }
+.deploy p { color: var(--muted); }
+details { color: var(--muted); }
+summary { cursor: pointer; font-size: 14px; }
+details pre {
+  margin: 10px 0 0; padding: 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+  overflow: auto; max-height: 280px; font: 12px/1.5 var(--mono); color: var(--ink); white-space: pre-wrap;
+}
+.secrets { width: 100%; border-collapse: collapse; font-size: 14px; display: block; overflow-x: auto; }
+.secrets td { padding: 8px 10px 8px 0; border-top: 1px solid var(--line); vertical-align: top; color: var(--muted); }
+.secrets td:first-child { color: var(--ink); white-space: nowrap; }
+
+footer.muted { margin-top: 32px; font-size: 13px; display: grid; gap: 6px; }
+
+@media (max-width: 560px) {
+  header { flex-direction: column; }
+  .qcard { aspect-ratio: auto; flex-direction: column; }
+  .qportrait { flex-basis: 160px; -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent); mask-image: linear-gradient(180deg, #000 55%, transparent); }
+  .secrets td:first-child { white-space: normal; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
