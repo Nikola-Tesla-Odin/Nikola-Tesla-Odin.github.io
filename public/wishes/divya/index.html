@@ -153,6 +153,15 @@ body {
 .dots { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; max-width: 320px; }
 .dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, .25); transition: background .4s; }
 .dots i.on { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+.polaroid.out-r { opacity: 0; transform: translate(60px, -20px) rotate(calc(var(--r) + 8deg)) scale(.95); }
+.mem-nav { display: flex; align-items: center; gap: 14px; }
+.navb {
+  flex: none; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255, 217, 138, .55);
+  background: rgba(18, 10, 38, .55); color: var(--gold); font-size: 26px; line-height: 1; cursor: pointer; transition: transform .2s, background .2s;
+}
+.navb:hover { background: rgba(255, 217, 138, .15); transform: scale(1.06); }
+.navb:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.navb:disabled { opacity: .3; cursor: default; transform: none; }
 .hint { font-family: var(--f-serif); font-style: italic; font-size: 14px; color: var(--muted); opacity: .8; }
 
 /* Scene 4: the video */
@@ -270,14 +279,21 @@ a.next { text-decoration: none; display: inline-block; }
 <section class="scene" id="mem" aria-label="Memories">
   <div class="chapter" id="chapter">दो साल · एक दोस्ती</div>
   <div class="polaroid-wrap" id="pw"></div>
-  <div class="dots" id="dots"></div>
-  <div class="hint">टैप करो, अगली याद के लिए</div>
+  <div class="mem-nav">
+    <button class="navb" id="memPrev" type="button" aria-label="Previous photo">‹</button>
+    <div class="dots" id="dots"></div>
+    <button class="navb" id="memNext" type="button" aria-label="Next photo">›</button>
+  </div>
+  <div class="hint">‹ पिछली याद · स्वाइप करो या टैप करो · अगली याद ›</div>
 </section>
 
 <section class="scene" id="s-vid" aria-label="Video">
   <p class="vtitle">और ये… एक छोटा सा पल, जो हमेशा रहेगा 🎥</p>
   <div class="vid-frame"><video id="vid" src="memory.mp4" playsinline controls preload="metadata"></video></div>
-  <button class="next" type="button" data-go="letter">आगे →</button>
+  <div class="row">
+    <button class="next ghost" type="button" id="vidBack">← फ़ोटो पर वापस</button>
+    <button class="next" type="button" data-go="letter">आगे →</button>
+  </div>
 </section>
 
 <section class="scene" id="s-letter" aria-label="Letter">
@@ -477,9 +493,8 @@ a.next { text-decoration: none; display: inline-block; }
   let mi = -1, memTimer = null;
   dots.innerHTML = MEMS.map(() => '<i></i>').join('');
   function preload() { for (let i = 1; i <= 19; i++) { const im = new Image(); im.src = `p/${String(i).padStart(2, '0')}.jpg`; } }
-  function showMem(i) {
-    const old = pw.querySelector('.polaroid.in');
-    if (old) { old.classList.replace('in', 'out'); setTimeout(() => old.remove(), 1100); }
+  function showMem(i, dir = 1) {
+    pw.querySelectorAll('.polaroid.in').forEach((old) => { old.classList.replace('in', dir < 0 ? 'out-r' : 'out'); setTimeout(() => old.remove(), 1100); });
     const m = MEMS[i], el = document.createElement('figure');
     el.className = 'polaroid' + (m.p.length > 1 ? ' collage' : '');
     el.style.setProperty('--r', `${(i % 2 ? 1 : -1) * (1.5 + Math.random() * 2.5)}deg`);
@@ -489,17 +504,38 @@ a.next { text-decoration: none; display: inline-block; }
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in')));
     $('#chapter').textContent = m.ch;
     dots.querySelectorAll('i').forEach((d, k) => d.classList.toggle('on', k <= i));
+    $('#memPrev').disabled = i === 0;
     if (Math.random() < .5) { const r = pw.getBoundingClientRect(); burst(r.left + Math.random() * r.width, r.top, 14, 3, 'spark'); }
   }
-  function nextMem() {
+  function goMem(step) {
     clearTimeout(memTimer);
-    mi++;
-    if (mi >= MEMS.length) { show('s-vid'); return; }
-    showMem(mi);
-    memTimer = setTimeout(nextMem, mi === MEMS.length - 1 ? 6500 : 5000);
+    const to = mi + step;
+    if (to >= MEMS.length) { show('s-vid'); return; }
+    if (to >= 0) { mi = to; showMem(mi, step); }
+    memTimer = setTimeout(() => goMem(1), mi === MEMS.length - 1 ? 6500 : 5000);
   }
-  function startMemories() { mi = -1; pw.innerHTML = ''; nextMem(); }
-  $('#mem').addEventListener('click', () => { if (current === 'mem') nextMem(); });
+  let memResume = 0;
+  function startMemories() { mi = memResume - 1; memResume = 0; pw.innerHTML = ''; goMem(1); }
+  $('#memPrev').addEventListener('click', (e) => { e.stopPropagation(); goMem(-1); });
+  $('#memNext').addEventListener('click', (e) => { e.stopPropagation(); goMem(1); });
+  // tap: left third goes back, the rest goes forward; swipe works both ways
+  let tx = null, swiped = false;
+  $('#mem').addEventListener('touchstart', (e) => { tx = e.touches[0].clientX; swiped = false; }, { passive: true });
+  $('#mem').addEventListener('touchend', (e) => {
+    if (tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx; tx = null;
+    if (Math.abs(dx) > 45) { swiped = true; goMem(dx > 0 ? -1 : 1); }
+  });
+  $('#mem').addEventListener('click', (e) => {
+    if (current !== 'mem' || swiped) { swiped = false; return; }
+    goMem(e.clientX < innerWidth / 3 ? -1 : 1);
+  });
+  addEventListener('keydown', (e) => {
+    if (current !== 'mem') return;
+    if (e.key === 'ArrowLeft') goMem(-1);
+    if (e.key === 'ArrowRight') goMem(1);
+  });
+  $('#vidBack').addEventListener('click', () => { vid.pause(); memResume = MEMS.length - 1; if (!muted) fadeSong(.85); show('mem'); });
 
   // ---------- letter ----------
   function startLetter() {
