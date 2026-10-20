@@ -359,14 +359,14 @@ footer .brand { font-size: 24px; }
 
         <button class="btn wa" id="send" type="button">💬 WhatsApp pe bhejo</button>
         <p class="err" id="sendErr" hidden></p>
-        <p class="send-note">Aapka order seedha hamare WhatsApp (+91 77450 58833) pe aayega.</p>
+        <p class="send-note">Aapka order seedha hamare WhatsApp (+91 63761 62488) pe aayega.</p>
       </div>
 
       <div class="order done" id="done" hidden>
         <h3>Bas ek kadam aur!</h3>
         <p>Order ka message WhatsApp mein khul gaya hai, wahan <b>Send</b> daba dena. Phir yahan wapas aao:</p>
         <button class="btn wa" id="shareFiles" type="button">🎙️ Voice note aur photos bhejo</button>
-        <p class="tip" id="shareTip">WhatsApp mein sabse upar wali chat <b>+91 77450 58833</b> chuno.</p>
+        <p class="tip" id="shareTip">WhatsApp mein sabse upar wali chat <b>+91 63761 62488</b> chuno.</p>
         <button class="link-btn" id="again" type="button">↺ Naya order</button>
       </div>
       <div class="order done" id="thanks" hidden>
@@ -387,7 +387,7 @@ footer .brand { font-size: 24px; }
 
 <script>
 // Orders go to this WhatsApp number (country code, digits only).
-const ORDER_WA = "917745058833";
+const ORDER_WA = "916376162488";
 
 // a / b / name / c are the lines of the demo's final screen.
 const OCC = {
@@ -624,7 +624,7 @@ $("send").addEventListener("click", () => {
   $("done").hidden = false;
   if (!canShareFiles(f)) {
     $("shareFiles").textContent = "⬇️ Voice note / photos save karo";
-    $("shareTip").innerHTML = "Save karke WhatsApp chat <b>+91 77450 58833</b> mein attach (📎) kar dena.";
+    $("shareTip").innerHTML = "Save karke WhatsApp chat <b>+91 63761 62488</b> mein attach (📎) kar dena.";
   }
   $("done").scrollIntoView({ block: "center" });
 });
