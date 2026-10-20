@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jaadu Wishes ✨</title>
+<meta name="description" content="Bas bolo, hum jaadu bana denge. Personalised birthday surprise pages and story videos from your photos and your words, in Hindi or English.">
+<meta name="theme-color" content="#120a26">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nikola-tesla-odin.github.io/wishes/">
+<meta property="og:title" content="Jaadu Wishes ✨ Bas bolo, hum jaadu bana denge">
+<meta property="og:description" content="A magical birthday surprise from your photos and your words. Tap, balloons pop, hooray.">
+<meta property="og:image" content="https://nikola-tesla-odin.github.io/wishes/divya/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="divya/icon.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Parisienne&family=Kalam:wght@400;700&family=Tiro+Devanagari+Hindi&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Outfit:wght@400;600;800&display=swap">
+<style>
+/* Same night-sky world as the wish pages themselves (deliberately single dark look). */
+:root {
+  --night: #120a26;
+  --dusk: #2b1450;
+  --card: rgba(255, 255, 255, .06);
+  --line: rgba(255, 217, 138, .22);
+  --gold: #ffd98a;
+  --rose: #ff9ec7;
+  --ink: #fff6ec;
+  --muted: #cbb8e6;
+  --wa: #25d366;
+  --f-script: "Parisienne", "Snell Roundhand", cursive;
+  --f-hindi: "Tiro Devanagari Hindi", "Kohinoor Devanagari", serif;
+  --f-hand: "Kalam", "Bradley Hand", cursive;
+  --f-serif: "Cormorant Garamond", Georgia, serif;
+  --f-ui: "Outfit", system-ui, sans-serif;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; overflow-x: hidden;
+  background: radial-gradient(120% 70% at 50% 0%, var(--dusk) 0%, var(--night) 65%) fixed, var(--night);
+  color: var(--ink); font-family: var(--f-ui); line-height: 1.55;
+  -webkit-tap-highlight-color: transparent;
+}
+#sky, #fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+#sky { z-index: 0; }
+#fx { z-index: 50; }
+main, header, footer { position: relative; z-index: 1; }
+.wrap { width: min(1080px, 100% - 32px); margin-inline: auto; }
+a { color: var(--gold); }
+
+header .wrap { display: flex; align-items: center; justify-content: space-between; padding-block: 18px; }
+.brand { font-family: var(--f-script); font-size: 30px; color: var(--gold); text-decoration: none; }
+.nav-cta { font-weight: 600; font-size: 14px; color: var(--night); background: var(--gold); padding: 9px 16px; border-radius: 99px; text-decoration: none; }
+
+/* Hero */
+.hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; padding-block: 28px 64px; }
+.kicker { font-family: var(--f-hand); color: var(--rose); font-size: 20px; margin: 0 0 6px; }
+h1 { font-family: var(--f-hindi); font-weight: 400; font-size: clamp(38px, 6.4vw, 68px); line-height: 1.12; margin: 0 0 16px; text-wrap: balance; }
+h1 em { font-family: var(--f-script); font-style: normal; color: var(--gold); font-size: 1.2em; }
+.lede { font-size: clamp(17px, 2.2vw, 20px); color: var(--muted); max-width: 34ch; margin: 0 0 26px; }
+.btns { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font: 600 16px var(--f-ui); padding: 14px 22px; border-radius: 99px; border: 0; cursor: pointer; text-decoration: none; }
+.btn.gold { background: linear-gradient(135deg, #fff1c9, var(--gold) 50%, #f3b45a); color: #3a1d08; box-shadow: 0 8px 30px rgba(255, 217, 138, .3); }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn.wa { background: var(--wa); color: #06301a; }
+.trust { margin-top: 18px; font-size: 14px; color: var(--muted); }
+
+/* Phone demo */
+.phone {
+  justify-self: center; position: relative; width: min(320px, 82vw); aspect-ratio: 9 / 18.5;
+  border-radius: 42px; padding: 12px; background: #0b0618;
+  box-shadow: 0 0 0 2px rgba(255, 217, 138, .25), 0 30px 80px rgba(0, 0, 0, .6), 0 0 120px rgba(255, 158, 199, .15);
+}
+.screen { position: relative; height: 100%; border-radius: 32px; overflow: hidden; background: radial-gradient(120% 90% at 50% 110%, var(--dusk), var(--night) 60%); isolation: isolate; }
+.screen canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.notch { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 90px; height: 22px; border-radius: 99px; background: #000; z-index: 5; }
+.stage { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; text-align: center; transition: opacity .8s ease; }
+.stage.off { opacity: 0; pointer-events: none; }
+.whisper { font-family: var(--f-serif); font-style: italic; font-size: 18px; color: var(--muted); }
+#orb { position: relative; width: 150px; aspect-ratio: 1; border: 0; border-radius: 50%; background: none; cursor: pointer; animation: float 4s ease-in-out infinite; }
+#orb:focus-visible { outline: 2px dashed var(--gold); outline-offset: 8px; }
+#orb .core { position: absolute; inset: 14%; border-radius: 50%; display: grid; place-items: center;
+  background: radial-gradient(circle at 35% 30%, #fffbe8 0%, var(--gold) 35%, #e89a3c 75%, #a35a1c 100%);
+  box-shadow: 0 0 34px 6px rgba(255, 217, 138, .55), 0 0 90px 24px rgba(255, 158, 199, .25), inset -8px -12px 24px rgba(120, 50, 10, .45); }
+#orb .core span { font-family: var(--f-script); font-size: 64px; line-height: 1; color: #5a2a10; transform: translateY(6%); }
+#orb .ring { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid rgba(255, 217, 138, .6); animation: ripple 2.4s ease-out infinite; }
+#orb .ring + .ring { animation-delay: 1.2s; }
+.click-here { font-family: var(--f-hand); font-weight: 700; font-size: 24px; color: var(--gold); animation: glow 1.6s ease-in-out infinite alternate; }
+.hb-small { font-family: var(--f-script); font-size: 40px; line-height: 1; margin: 0; }
+.hb-name { font-family: var(--f-script); font-size: 64px; line-height: 1.05; color: var(--gold); margin: 0; text-shadow: 0 0 24px rgba(255, 217, 138, .5); overflow-wrap: anywhere; }
+.hooray { font-family: var(--f-hand); font-size: 22px; color: var(--rose); margin: 4px 0 0; }
+.replay { margin-top: 10px; font: 600 13px var(--f-ui); color: var(--muted); background: none; border: 1px solid var(--line); border-radius: 99px; padding: 6px 14px; cursor: pointer; }
+.balloon { position: absolute; bottom: -90px; width: 40px; height: 50px; border: 0; padding: 0; cursor: pointer;
+  border-radius: 50% 50% 48% 48% / 55% 55% 45% 45%;
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, .85) 0 6%, transparent 7%), radial-gradient(circle at 40% 35%, var(--c1), var(--c2) 75%);
+  animation: rise var(--t) cubic-bezier(.3, .1, .4, 1) forwards; z-index: 3; }
+.balloon::after { content: ""; position: absolute; top: 100%; left: 50%; width: 1px; height: 40px; background: rgba(255, 255, 255, .4); }
+.name-row { margin-top: 18px; display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+.name-row input { font: 16px var(--f-ui); color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 99px; padding: 8px 14px; width: 170px; }
+
+@keyframes float { 50% { transform: translateY(-10px); } }
+@keyframes ripple { from { transform: scale(.85); opacity: 1; } to { transform: scale(1.5); opacity: 0; } }
+@keyframes glow { from { text-shadow: 0 0 6px rgba(255, 217, 138, .4); } to { text-shadow: 0 0 20px rgba(255, 217, 138, .95), 0 0 36px rgba(255, 158, 199, .6); } }
+@keyframes rise { to { transform: translateY(calc(-1 * var(--h))) rotate(var(--r)); } }
+
+/* Sections */
+section { padding-block: 56px; }
+h2 { font-family: var(--f-hindi); font-weight: 400; font-size: clamp(30px, 4.6vw, 44px); line-height: 1.2; margin: 0 0 10px; text-align: center; text-wrap: balance; }
+h2 em { font-family: var(--f-script); font-style: normal; color: var(--gold); font-size: 1.15em; }
+.sub { text-align: center; color: var(--muted); max-width: 52ch; margin: 0 auto 36px; }
+
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.step { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 22px; }
+.step .n { font-family: var(--f-script); font-size: 40px; color: var(--gold); line-height: 1; }
+.step h3 { margin: 6px 0 8px; font-size: 19px; }
+.step p { margin: 0; color: var(--muted); font-size: 15px; }
+.bubble { margin-top: 14px; font-family: var(--f-hindi); font-size: 15px; line-height: 1.6; background: #1e5c3b; color: #e9fff1; padding: 12px 14px; border-radius: 16px 16px 16px 4px; }
+.bubble small { display: block; margin-top: 6px; font-family: var(--f-ui); font-size: 11px; opacity: .7; }
+.chips { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--line); color: var(--gold); }
+
+.sample { display: grid; grid-template-columns: .8fr 1.2fr; gap: 44px; align-items: center; }
+.clip { justify-self: center; width: min(300px, 78vw); aspect-ratio: 9 / 16; border-radius: 26px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 24px 70px rgba(0, 0, 0, .55); background: #000; }
+.clip video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sample h2, .sample .sub { text-align: left; margin-inline: 0; }
+.quote { font-family: var(--f-hand); font-size: 19px; color: var(--ink); border-left: 3px solid var(--rose); padding-left: 14px; margin: 0 0 22px; }
+.gets { list-style: none; padding: 0; margin: 0 0 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; }
+.gets li { font-size: 15px; color: var(--muted); padding-left: 22px; position: relative; }
+.gets li::before { content: "✦"; position: absolute; left: 0; color: var(--gold); }
+
+.anywhere { text-align: center; }
+.channels { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 8px; }
+.channel { font-size: 15px; padding: 10px 18px; border-radius: 99px; background: var(--card); border: 1px solid var(--line); }
+.big-tag { font-family: var(--f-script); color: var(--gold); font-size: clamp(42px, 8vw, 80px); line-height: 1.1; margin: 0 0 6px; }
+
+.order { background: linear-gradient(160deg, rgba(255, 217, 138, .1), rgba(255, 158, 199, .08)); border: 1px solid var(--line); border-radius: 28px; padding: clamp(22px, 4vw, 40px); }
+.order form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 10px; }
+.order label { display: grid; gap: 6px; font-size: 14px; color: var(--muted); }
+.order .full { grid-column: 1 / -1; }
+.order input, .order select, .order textarea { font: 16px var(--f-ui); color: var(--ink); background: rgba(0, 0, 0, .25); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; width: 100%; }
+.order textarea { min-height: 96px; resize: vertical; font-family: var(--f-hindi); }
+.order .btn { justify-self: start; }
+.note { font-size: 13px; color: var(--muted); margin: 0; }
+
+footer { padding-block: 30px 40px; text-align: center; color: var(--muted); font-size: 13px; }
+footer .brand { font-size: 24px; }
+
+@media (max-width: 820px) {
+  .hero, .sample { grid-template-columns: 1fr; }
+  .hero { text-align: center; padding-top: 8px; }
+  .lede { margin-inline: auto; }
+  .btns { justify-content: center; }
+  .steps { grid-template-columns: 1fr; }
+  .sample h2, .sample .sub { text-align: center; }
+  .order form { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #orb, #orb .ring, .click-here { animation: none; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas>
+<canvas id="fx"></canvas>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="#">Jaadu Wishes</a>
+    <a class="nav-cta" href="#order">Banwao ✨</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <p class="kicker">birthday bhool gaye? koi baat nahi…</p>
+      <h1>Bas bolo.<br>Hum <em>jaadu</em> bana denge.</h1>
+      <p class="lede">Apni photos bhejo, ek voice note mein dil ki baat bolo. Hum bana denge ek magical birthday surprise: tap karo, gubbare phootein, aur naam ke saath “Happy Birthday”.</p>
+      <div class="btns">
+        <a class="btn gold" href="#order">Apna surprise banwao</a>
+        <a class="btn ghost" href="#sample">Ek asli wala dekho</a>
+      </div>
+      <p class="trust">Hindi · English · Hinglish · sirf phone chahiye</p>
+    </div>
+
+    <div>
+      <div class="phone" aria-label="Live demo">
+        <div class="screen" id="screen">
+          <canvas id="mini"></canvas>
+          <div class="notch"></div>
+          <div class="stage" id="s1">
+            <p class="whisper">Ek chhota sa jaadu, sirf tumhare liye…</p>
+            <button id="orb" aria-label="Click here to open the surprise">
+              <span class="ring"></span><span class="ring"></span>
+              <span class="core"><span>✦</span></span>
+            </button>
+            <p class="click-here">Click here</p>
+          </div>
+          <div class="stage off" id="s2" aria-live="polite">
+            <p class="hb-small">Happy Birthday</p>
+            <p class="hb-small" style="font-size:28px">my dear</p>
+            <p class="hb-name" id="hbName">Divya</p>
+            <p class="hooray">hooray! 🎉 gubbare phodo</p>
+            <button class="replay" id="replay">↺ phir se</button>
+          </div>
+        </div>
+      </div>
+      <div class="name-row">
+        <label for="nm">Apne dost ka naam likho:</label>
+        <input id="nm" maxlength="14" placeholder="Divya" autocomplete="off">
+      </div>
+    </div>
+  </div>
+
+  <section id="how">
+    <div class="wrap">
+      <h2>Kaise <em>banta</em> hai</h2>
+      <p class="sub">Koi app nahi, koi form-bharna nahi. Jaise dost ko WhatsApp karte ho, waise hi.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="n">1</div>
+          <h3>Dil ki baat bolo</h3>
+          <p>Voice note ya message. Kiska birthday hai, kaisa feel chahiye, koi inside joke.</p>
+          <div class="bubble">“मेरी बेस्ट फ्रेंड है, आज विश करना भूल गई… कुछ ऐसा बनाओ जो इमोशनल भी हो, प्यारा भी, और उसे लगे ही नहीं कि मैं लेट हूँ। जादुई वर्ल्ड टाइप, क्लिक करे तो गुब्बारे फूटें।”<small>▶︎ voice note · asli brief</small></div>
+        </div>
+        <div class="step">
+          <div class="n">2</div>
+          <h3>Photos &amp; video bhejo</h3>
+          <p>Jitni chahe. Saath bitaaye saalon ki yaadein, ek-do video clips bhi.</p>
+          <div class="chips"><span class="chip">21 photos</span><span class="chip">1 video</span><span class="chip">2 saal ki yaadein</span></div>
+        </div>
+        <div class="step">
+          <div class="n">3</div>
+          <h3>Jaadu ready</h3>
+          <p>Ek magical link + 15 sec ki Story video, unke naam, tumhare shabd aur ek pyaara gaana.</p>
+          <div class="chips"><span class="chip">magic link</span><span class="chip">story video</span><span class="chip">gaana</span><span class="chip">chitthi</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sample">
+    <div class="wrap sample">
+      <div class="clip">
+        <video src="divya/story.mp4" poster="sample-poster.jpg" muted loop playsinline autoplay preload="metadata"></video>
+      </div>
+      <div>
+        <h2>Divya ke liye, <em>Palak</em> se</h2>
+        <p class="sub">Ek late wish jo sabse yaadgaar ban gayi. Order se surprise tak, usi din.</p>
+        <p class="quote">“Use lagna hi nahi chahiye ki maine late wish kiya.” <br><small style="color:var(--muted)">— Palak ka brief</small></p>
+        <ul class="gets">
+          <li>Tap karo, gubbare phootein</li>
+          <li>Naam ke saath Happy Birthday</li>
+          <li>Yaadon ki photo gallery</li>
+          <li>Tumhare shabdon mein chitthi</li>
+          <li>Unka apna gaana</li>
+          <li>Insta / WhatsApp Story video</li>
+        </ul>
+        <div class="btns"><a class="btn gold" href="divya/" target="_blank" rel="noopener">Pura surprise kholo ↗</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="anywhere">
+    <div class="wrap">
+      <p class="big-tag">Build anywhere, Sell anywhere</p>
+      <p class="sub">Kahin se bhi banwao, kahin bhi bhejo. Ek link jo har jagah khulta hai, aur ek video jo har Story mein chalti hai.</p>
+      <div class="channels">
+        <span class="channel">💬 WhatsApp</span><span class="channel">📸 Instagram Story</span><span class="channel">🔗 Link</span><span class="channel">📱 Kisi bhi phone pe</span><span class="channel">✈️ Kisi bhi desh mein</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="order">
+    <div class="wrap order">
+      <h2 style="text-align:left">Apna <em>surprise</em> banwao</h2>
+      <p class="note">Bharo, WhatsApp pe bhejo. Photos wahi chat mein bhej dena.</p>
+      <form id="orderForm">
+        <label>Birthday kiska hai?<input name="who" required maxlength="40" placeholder="Divya"></label>
+        <label>Tumhara naam<input name="from" required maxlength="40" placeholder="Palak"></label>
+        <label>Rishta<select name="rel"><option>Best friend</option><option>Partner</option><option>Bhai / Behen</option><option>Mummy / Papa</option><option>Colleague</option><option>Koi aur</option></select></label>
+        <label>Kab chahiye?<select name="when"><option>Aaj hi</option><option>Kal tak</option><option>Is hafte</option></select></label>
+        <label class="full">Dil ki baat (Hindi / English, jaise bolte ho)<textarea name="msg" maxlength="800" placeholder="Kaisa feel chahiye, koi yaad, inside joke…"></textarea></label>
+        <button class="btn wa full" type="submit">💬 WhatsApp pe bhejo</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="brand">Jaadu Wishes</div>
+  <p>Har wish ek chhota sa jaadu ✨</p>
+</footer>
+
+<script>
+// Orders go to this WhatsApp number (country code, digits only). Empty = visitor picks a chat.
+const ORDER_WA = "917745058833";
+
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// Twinkling background sky.
+const sky = document.getElementById("sky"), sx = sky.getContext("2d");
+let stars = [];
+function sizeSky() {
+  sky.width = innerWidth * devicePixelRatio; sky.height = innerHeight * devicePixelRatio;
+  stars = Array.from({ length: Math.round(innerWidth * innerHeight / 9000) }, () => ({
+    x: Math.random() * sky.width, y: Math.random() * sky.height, r: (Math.random() * 1.2 + .3) * devicePixelRatio, p: Math.random() * 6.28
+  }));
+}
+function drawSky(t) {
+  sx.clearRect(0, 0, sky.width, sky.height);
+  for (const s of stars) {
+    sx.globalAlpha = .35 + .65 * Math.abs(Math.sin(s.p + t / 1400));
+    sx.fillStyle = "#fff6ec"; sx.beginPath(); sx.arc(s.x, s.y, s.r, 0, 6.28); sx.fill();
+  }
+  if (!reduce) requestAnimationFrame(drawSky);
+}
+sizeSky(); requestAnimationFrame(drawSky);
+addEventListener("resize", sizeSky);
+
+// Confetti bursts drawn on a canvas (page-wide or inside the phone).
+function confetti(canvas, x, y, n = 80) {
+  if (reduce) return;
+  const c = canvas.getContext("2d"), dpr = devicePixelRatio;
+  canvas.width = canvas.clientWidth * dpr; canvas.height = canvas.clientHeight * dpr;
+  const colors = ["#ffd98a", "#ff9ec7", "#9fd8ff", "#c6a7ff", "#fff6ec"];
+  const bits = Array.from({ length: n }, () => {
+    const a = Math.random() * 6.28, v = (Math.random() * 6 + 2) * dpr;
+    return { x: x * dpr, y: y * dpr, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 3 * dpr, s: (Math.random() * 4 + 3) * dpr, c: colors[Math.floor(Math.random() * colors.length)], r: Math.random() * 6, life: 90 };
+  });
+  (function step() {
+    c.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    for (const b of bits) {
+      if (b.life-- <= 0) continue;
+      alive = true; b.vy += .18 * dpr; b.vx *= .985; b.x += b.vx; b.y += b.vy; b.r += .2;
+      c.globalAlpha = Math.min(1, b.life / 30); c.fillStyle = b.c;
+      c.save(); c.translate(b.x, b.y); c.rotate(b.r); c.fillRect(-b.s / 2, -b.s / 4, b.s, b.s / 2); c.restore();
+    }
+    if (alive) requestAnimationFrame(step); else c.clearRect(0, 0, canvas.width, canvas.height);
+  })();
+}
+
+// Live demo: orb -> balloons -> Happy Birthday.
+const screen = document.getElementById("screen"), mini = document.getElementById("mini");
+const s1 = document.getElementById("s1"), s2 = document.getElementById("s2");
+const hbName = document.getElementById("hbName"), nm = document.getElementById("nm");
+const pairs = [["#ff9ec7", "#d94f8a"], ["#ffd98a", "#e0952f"], ["#9fd8ff", "#3f86c9"], ["#c6a7ff", "#7a4fd6"], ["#a8f0c6", "#2fa36a"]];
+let balloonTimer;
+
+function popBalloon(b) {
+  const r = b.getBoundingClientRect(), sr = screen.getBoundingClientRect();
+  confetti(mini, r.left - sr.left + r.width / 2, r.top - sr.top + r.height / 2, 40);
+  b.remove();
+}
+function launchBalloon() {
+  const b = document.createElement("button");
+  const [c1, c2] = pairs[Math.floor(Math.random() * pairs.length)];
+  b.className = "balloon"; b.setAttribute("aria-label", "Pop balloon");
+  b.style.cssText = `left:${Math.random() * 80 + 5}%;--c1:${c1};--c2:${c2};--t:${(Math.random() * 3 + 5).toFixed(1)}s;--h:${screen.clientHeight + 160}px;--r:${(Math.random() * 30 - 15).toFixed(0)}deg`;
+  b.addEventListener("pointerdown", () => popBalloon(b));
+  b.addEventListener("animationend", () => b.remove());
+  screen.appendChild(b);
+}
+function openSurprise() {
+  s1.classList.add("off"); s2.classList.remove("off");
+  confetti(mini, screen.clientWidth / 2, screen.clientHeight / 2, 120);
+  const r = screen.getBoundingClientRect();
+  confetti(document.getElementById("fx"), r.left + r.width / 2, r.top + r.height / 3, 90);
+  for (let i = 0; i < 8; i++) setTimeout(launchBalloon, i * 180);
+  clearInterval(balloonTimer); balloonTimer = setInterval(launchBalloon, 900);
+}
+function reset() {
+  clearInterval(balloonTimer);
+  screen.querySelectorAll(".balloon").forEach(b => b.remove());
+  s2.classList.add("off"); s1.classList.remove("off");
+}
+document.getElementById("orb").addEventListener("click", openSurprise);
+document.getElementById("replay").addEventListener("click", reset);
+nm.addEventListener("input", () => {
+  hbName.textContent = nm.value.trim() || "Divya";
+  if (s2.classList.contains("off") && nm.value.trim()) openSurprise();
+});
+
+// Order form -> prefilled WhatsApp message.
+document.getElementById("orderForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const f = new FormData(e.target);
+  const text = `✨ Jaadu Wishes order\nBirthday: ${f.get("who")}\nFrom: ${f.get("from")}\nRishta: ${f.get("rel")}\nKab: ${f.get("when")}\n\n${f.get("msg") || ""}\n\n(Photos isi chat mein bhej raha/rahi hoon)`;
+  open(`https://wa.me/${ORDER_WA}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+});
+
+// Only play the sample clip while it's on screen.
+const vid = document.querySelector(".clip video");
+new IntersectionObserver(([en]) => { en.isIntersecting && !reduce ? vid.play().catch(() => {}) : vid.pause(); }, { threshold: .3 }).observe(vid);
+</script>
+</body>
+</html>
