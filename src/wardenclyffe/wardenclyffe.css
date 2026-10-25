@@ -1,0 +1,99 @@
+/* Wardenclyffe: night sky, Tesla blue for the tower, Bitcoin gold for the holders' lamps. */
+:root { --volt: #6eb4ff; --volt-soft: rgba(110, 180, 255, 0.18); --lamp: #ffd27a; }
+
+body {
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(110, 180, 255, 0.10), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgba(247, 147, 26, 0.06), transparent 60%),
+    var(--bg);
+}
+main.wc { max-width: 1080px; }
+.wc-head { margin-bottom: 20px; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 500; }
+
+.stage-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 18px; }
+.stage-grid .card { margin-bottom: 18px; }
+.tower-card { padding: 12px; place-items: center; background: linear-gradient(180deg, #0b0f18, var(--panel)); }
+.stage-card h2 { margin: 0; }
+.tesla { font: italic 400 18px/1.45 var(--display); color: var(--card-ink); }
+
+.stages { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.stages li {
+  font: 500 11px/1.25 var(--mono); letter-spacing: 0.02em; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 6px; padding: 7px 6px; text-align: center;
+}
+.stages li.done { color: #0b1220; background: var(--volt); border-color: var(--volt); }
+.stages li.next { color: var(--ink); border-color: var(--volt); box-shadow: 0 0 0 1px var(--volt-soft), 0 0 14px var(--volt-soft); }
+.goal { font-size: 17px; }
+.goal strong { color: var(--volt); font-weight: 600; }
+
+.meter { height: 8px; border-radius: 99px; background: var(--raised); overflow: hidden; border: 1px solid var(--line); }
+.meter div { height: 100%; background: linear-gradient(90deg, var(--volt), #bfe3ff); box-shadow: 0 0 12px var(--volt); }
+
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0; }
+.stats div { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.stats dt { font: 500 11px/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.stats dd { margin: 6px 0 0; font: 400 26px/1 var(--display); font-variant-numeric: tabular-nums; }
+
+/* Tower */
+.tower { width: 100%; max-width: 360px; height: auto; display: block; }
+.tower .ground { stroke: #3a4152; stroke-width: 1.5; }
+.tower .part line, .tower .part path, .tower .part polygon, .tower .part rect { fill: none; stroke-linecap: round; }
+.tower .ghost * { stroke: rgba(110, 180, 255, 0.22); stroke-width: 0.8; stroke-dasharray: 3 3; fill: none !important; }
+.tower .built line, .tower .built path { stroke: #c9d3e3; stroke-width: 1.3; }
+.tower .built .leg { stroke-width: 2.4; }
+.tower .lab rect, .tower .lab polygon { fill: #5b2f22; stroke: #8a4a36; stroke-width: 1; }
+.tower .lab .win { fill: #ffd27a; stroke: none; opacity: 0.85; }
+.tower .built .dome { fill: rgba(201, 211, 227, 0.06); stroke: #c9d3e3; stroke-width: 1.6; }
+.tower .built .dome.plated { fill: url(#copper); stroke: #e7a46a; }
+.tower .built .rib { stroke: #c9d3e3; stroke-width: 1; }
+.tower .halo { animation: hum 2.6s ease-in-out infinite; transform-origin: 150px 118px; }
+.tower .bolts path { fill: none; stroke: #e6f4ff; stroke-width: 2; filter: drop-shadow(0 0 4px var(--volt)); animation: strike 1.2s steps(2) infinite; }
+@keyframes hum { 0%, 100% { opacity: 0.55; transform: scale(0.96); } 50% { opacity: 1; transform: scale(1.04); } }
+@keyframes strike { 50% { opacity: 0.2; } }
+
+/* Map */
+.map-card { gap: 10px; }
+.map-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.map-head h2 { margin: 0; }
+.map { width: 100%; height: auto; display: block; border-radius: 10px; }
+.map .sphere { fill: #0a0e16; stroke: var(--line); }
+.map .grid { fill: none; stroke: rgba(154, 161, 175, 0.08); stroke-width: 0.5; }
+.map .land { fill: #1a2030; stroke: #2a3245; stroke-width: 0.5; }
+.map.fired .land { fill: #1f2a42; }
+.map .arc { fill: none; stroke: var(--volt); stroke-width: 1; stroke-opacity: 0.55; stroke-dasharray: 2 6; animation: flow 3s linear infinite; }
+.map .lamp .core { fill: #fff6d8; }
+.map .lamp .flicker { animation: flicker 3.4s ease-in-out infinite; }
+.map .lamp.mine .ring { fill: none; stroke: #fff; stroke-width: 1.2; stroke-dasharray: 3 3; }
+.map .towerpin .core { fill: #fff; }
+@keyframes flow { to { stroke-dashoffset: -32; } }
+@keyframes flicker { 0%, 100% { opacity: 0.85; } 40% { opacity: 1; } 70% { opacity: 0.7; } }
+.dark { font-size: 13px; overflow-wrap: anywhere; }
+
+/* Receiver */
+.receiver h2 { margin: 0; }
+.pick { display: grid; gap: 10px; }
+.pick label { flex-direction: row; }
+.claim { margin: 0; padding: 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; font: 13px/1.5 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* Log */
+.log { list-style: none; margin: 0; padding: 0; display: grid; }
+.log li { display: flex; justify-content: space-between; gap: 14px; padding: 10px 0; border-top: 1px solid var(--line); font: italic 400 16px/1.45 var(--display); }
+.log li:first-child { border-top: 0; }
+.log li::before { content: ""; flex: 0 0 8px; height: 8px; margin-top: 8px; border-radius: 50%; background: var(--muted); }
+.log li span { flex: 1; min-width: 0; }
+.log li.buy::before { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+.log li.sell::before { background: var(--bad); }
+.log li.lit::before { background: var(--lamp); box-shadow: 0 0 8px var(--lamp); }
+.log time { font: 400 12px/1.9 var(--mono); color: var(--muted); white-space: nowrap; font-style: normal; }
+
+main.wc > footer { margin-top: 28px; font-size: 13px; line-height: 1.6; }
+
+@media (max-width: 760px) {
+  .stage-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .tower { max-width: 280px; }
+  .stages { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tower .halo, .tower .bolts path, .map .arc, .map .lamp .flicker { animation: none; }
+}
