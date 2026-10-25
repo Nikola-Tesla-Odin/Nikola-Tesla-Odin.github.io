@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { track } from "../track";
 import { CITIES, type City } from "./cities";
 import { ago, fmtTokens, litLine, tradeLine } from "./lines";
-import { claimText, CREATOR, loadWorld, odin, postClaim, TOKEN, type World } from "./odin";
+import { CREATOR, loadWorld, odin, postClaim, TOKEN, type World } from "./odin";
 import { need, progress, STAGES } from "./stages";
 import { Tower } from "./Tower";
 import { lampsOf, WorldMap } from "./WorldMap";
@@ -49,7 +49,7 @@ function useSignIn() {
     setError("");
     setBusy(true);
     try {
-      // requires_api hands us Odin's session token, which lets the page post the lamp comment as this holder.
+      // requires_api hands us Odin's session token; the lamp registry shows it to Odin to learn who is lighting a lamp.
       const user = await odin.connect({ requires_api: true, requires_delegation: false });
       setPrincipal(user.principal);
       track("w-signed-in", "Wardenclyffe: signed in");
@@ -76,7 +76,8 @@ function Receiver({ world, onLit }: { world: World; onLit: () => void }) {
   const { principal, busy, error, signIn, signOut } = useSignIn();
   const me = world.holders.find((h) => h.user === principal) ?? null;
   const [query, setQuery] = useState("");
-  const [state, setState] = useState<"idle" | "posting" | "fallback" | "posted">("idle");
+  const [state, setState] = useState<"idle" | "posting" | "failed" | "posted">("idle");
+  const [failure, setFailure] = useState("");
   const [chosen, setChosen] = useState<City | null>(null);
   const [moving, setMoving] = useState(false);
   const city = useMemo(() => CITIES.find((c) => `${c.name}, ${c.country}`.toLowerCase() === query.trim().toLowerCase()) ?? null, [query]);
@@ -93,8 +94,10 @@ function Receiver({ world, onLit }: { world: World; onLit: () => void }) {
       setMoving(false);
       track("w-lit", "Wardenclyffe: lamp lit");
       setTimeout(onLit, 1500);
-    } catch {
-      setState("fallback");
+    } catch (e) {
+      setFailure(e instanceof Error ? e.message : String(e));
+      setState("failed");
+      track("w-light-failed", "Wardenclyffe: light failed");
     }
   }
 
@@ -150,7 +153,7 @@ function Receiver({ world, onLit }: { world: World; onLit: () => void }) {
         <h2>You hold {fmtTokens(me.tokens)} $TSLA. Where is your receiver?</h2>
       )}
 
-      {(state === "idle" || state === "posting") && (!lit || moving) ? (
+      {(state === "idle" || state === "posting" || state === "failed") && (!lit || moving) ? (
         <div className="pick">
           <label htmlFor="city" className="hint">Your city</label>
           <input id="city" list="cities" placeholder="Start typing, e.g. Lagos" value={query} onChange={(e) => setQuery(e.target.value)} autoComplete="off" />
@@ -158,20 +161,11 @@ function Receiver({ world, onLit }: { world: World; onLit: () => void }) {
             {CITIES.map((c) => <option key={c.id} value={`${c.name}, ${c.country}`} />)}
           </datalist>
           <button onClick={light} disabled={!city || state === "posting"}>{state === "posting" ? "Lighting…" : "Light my lamp"}</button>
-          <p className="hint">Your lamp is a public comment on the $TSLA page on Odin, so anyone can check who lit it. Pick your city, never your street.</p>
+          {state === "failed" && <p className="error">Couldn't light it: {failure}</p>}
+          <p className="hint">Your Odin sign-in proves the lamp is yours. The city is shown publicly next to your Odin name, so pick your city, never your street.</p>
         </div>
       ) : null}
 
-      {state === "fallback" && chosen && (
-        <div className="pick">
-          <p>Odin didn't take the comment from this page. Post this line as a comment on the $TSLA page yourself, and your lamp lights within a minute:</p>
-          <pre className="claim">{claimText(chosen)}</pre>
-          <div className="row">
-            <button className="copy" onClick={() => navigator.clipboard?.writeText(claimText(chosen))}>Copy line</button>
-            <a className="btn" href={ODIN_PAGE} target="_blank" rel="noreferrer">Open $TSLA on Odin.fun</a>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
@@ -263,7 +257,7 @@ export default function App() {
       </section>
 
       <footer className="hint">
-        Live from Odin.fun, refreshed every minute. A lamp is a comment on the <a href={ODIN_PAGE}>$TSLA token page</a> ending in #wardenclyffe; its brightness is the holder's balance. The tower rises with the number of holders and fires when $TSLA ascends. A community art project, not financial advice. Made by <a href="https://x.com/NikolaTesla_eth">@NikolaTesla_eth</a>.
+        Live from Odin.fun, refreshed every minute. A lamp is a city a holder picked after signing in with Odin; its brightness is their $TSLA balance on Odin. The tower rises with the number of holders and fires when $TSLA ascends. A community art project, not financial advice. Made by <a href="https://x.com/NikolaTesla_eth">@NikolaTesla_eth</a>.
       </footer>
     </main>
   );

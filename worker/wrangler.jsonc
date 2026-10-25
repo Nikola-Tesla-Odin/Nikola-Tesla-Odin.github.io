@@ -1,0 +1,7 @@
+{
+  // The lamp registry behind https://nikola-tesla-odin.github.io/wardenclyffe/ (free Workers + KV tier).
+  "name": "wardenclyffe",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "kv_namespaces": [{ "binding": "LAMPS", "id": "c7e091b34244491289e099fb73829785" }]
+}
