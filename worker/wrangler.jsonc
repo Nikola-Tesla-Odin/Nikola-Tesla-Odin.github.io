@@ -3,5 +3,7 @@
   "name": "wardenclyffe",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-01",
+  "triggers": { "crons": ["*/15 * * * *"] }, // stage check
+  "vars": { "BUFFER_CHANNEL_ID": "6ad1fd38778b240e2f2798b6" }, // @NikolaTesla_eth on X
   "kv_namespaces": [{ "binding": "LAMPS", "id": "c7e091b34244491289e099fb73829785" }]
 }
